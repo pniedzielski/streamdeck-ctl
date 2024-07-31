@@ -22,6 +22,7 @@ def main():
     deck = stream_decks[0]
 
     deck.open()
+    deck.reset()
 
     deck_type = deck.deck_type()
     if deck_type == "":
@@ -34,6 +35,7 @@ def main():
     Serial Number: {deck.get_serial_number()}
     Firmware Version: {deck.get_firmware_version()}""")
 
+    deck.reset()
     deck.close()
 
 if __name__ == "__main__":
