@@ -23,8 +23,12 @@ def main():
 
     deck.open()
 
+    deck_type = deck.deck_type()
+    if deck_type == "":
+        deck_type = "Stream Deck"
+
     print(f"""\
-Stream Deck found:
+{deck_type} found:
     Vendor: {deck.vendor_id()}
     Product ID: {deck.product_id()}
     Serial Number: {deck.get_serial_number()}
