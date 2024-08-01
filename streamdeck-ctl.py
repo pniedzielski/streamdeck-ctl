@@ -35,6 +35,13 @@ def main():
     Serial Number: {deck.get_serial_number()}
     Firmware Version: {deck.get_firmware_version()}""")
 
+    # Wait for user to kill the process
+    while True:
+        try:
+            user_input = input()
+        except EOFError:
+            break
+
     deck.reset()
     deck.close()
 
