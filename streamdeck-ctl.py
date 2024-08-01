@@ -5,6 +5,8 @@ import psutil
 from StreamDeck.DeviceManager import DeviceManager
 from StreamDeck.ImageHelpers import PILHelper
 import sys
+import threading
+import time
 
 def render_labeled_number(deck, number, label):
     center_font = ImageFont.load_default(size=48)
@@ -33,6 +35,11 @@ def update_cpu_percent(deck, key_number):
     key_image = render_labeled_number(deck, psutil.cpu_percent(), "CPU %")
     with deck:
         deck.set_key_image(key_number, key_image)
+
+def animate_system_metrics(deck):
+    while deck.is_open():
+        update_cpu_percent(deck, 7)
+        time.sleep(2.5)
 
 def main():
     stream_decks = DeviceManager().enumerate()
@@ -68,7 +75,8 @@ def main():
     Serial Number: {deck.get_serial_number()}
     Firmware Version: {deck.get_firmware_version()}""")
 
-    update_cpu_percent(deck, 5)
+    thread = threading.Thread(target=animate_system_metrics, args=[deck])
+    thread.start()
 
     # Wait for user to kill the process
     while True:
@@ -79,6 +87,8 @@ def main():
 
     deck.reset()
     deck.close()
+
+    thread.join()
 
 if __name__ == "__main__":
     main()
