@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from configparser import ConfigParser
+import obsws_python as obs
 import os
 from PIL import Image, ImageDraw, ImageFont
 import psutil
@@ -85,6 +86,16 @@ def main():
 
     thread = threading.Thread(target=animate_system_metrics, args=[deck])
     thread.start()
+
+    # Connect to OBS
+    obs_host = global_config.get("obs", "host", fallback="localhost")
+    obs_port = global_config.getint("obs", "port", fallback="4455")
+    obs_password = global_config.get("obs", "password", fallback="")
+
+    obs_client = obs.ReqClient(host=obs_host, port=obs_port, password=obs_password, timeout=3)
+
+    resp = obs_client.get_version()
+    print(f"Connected to OBS\n    Version: {resp.obs_version}")
 
     # Wait for user to kill the process
     while True:
