@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from configparser import ConfigParser
+import os
 from PIL import Image, ImageDraw, ImageFont
 import psutil
 from StreamDeck.DeviceManager import DeviceManager
@@ -7,6 +9,8 @@ from StreamDeck.ImageHelpers import PILHelper
 import sys
 import threading
 import time
+
+global_config = ConfigParser()
 
 def render_labeled_number(deck, number, label):
     center_font = ImageFont.load_default(size=48)
@@ -42,6 +46,9 @@ def animate_system_metrics(deck):
         time.sleep(2.5)
 
 def main():
+    global_config.read(os.path.expanduser("~/streamdeck.conf"))
+
+    # Connect to Stream Deck
     stream_decks = DeviceManager().enumerate()
     match len(stream_decks):
         case 0:
@@ -62,7 +69,8 @@ def main():
     deck.open()
     deck.reset()
 
-    deck.set_brightness(50)
+    brightness = global_config.getint("streamdeck", "brightness", fallback=30)
+    deck.set_brightness(brightness)
 
     deck_type = deck.deck_type()
     if deck_type == "":
