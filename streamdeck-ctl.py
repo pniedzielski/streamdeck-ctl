@@ -46,6 +46,27 @@ def animate_system_metrics(deck):
         update_cpu_percent(deck, 7)
         time.sleep(2.5)
 
+def livesplit_split(obs_client):
+    obs_client.trigger_hotkey_by_name('hotkey_split')
+
+def livesplit_reset(obs_client):
+    obs_client.trigger_hotkey_by_name('hotkey_reset')
+
+def livesplit_undo(obs_client):
+    obs_client.trigger_hotkey_by_name('hotkey_undo')
+
+def livesplit_skip(obs_client):
+    obs_client.trigger_hotkey_by_name('hotkey_skip')
+
+def livesplit_next_comparison(obs_client):
+    obs_client.trigger_hotkey_by_name('hotkey_next_comparison')
+
+def livesplit_prev_comparison(obs_client):
+    obs_client.trigger_hotkey_by_name('hotkey_previous_comparison')
+
+def livesplit_toggle_timing_method(obs_client):
+    obs_client.trigger_hotkey_by_name('hotkey_toggle_timing_method')
+
 def main():
     global_config.read(os.path.expanduser("~/streamdeck.conf"))
 
@@ -97,12 +118,16 @@ def main():
     resp = obs_client.get_version()
     print(f"Connected to OBS\n    Version: {resp.obs_version}")
 
+    livesplit_split(obs_client)
+
     # Wait for user to kill the process
     while True:
         try:
             user_input = input()
         except EOFError:
             break
+
+    livesplit_reset(obs_client)
 
     deck.reset()
     deck.close()
